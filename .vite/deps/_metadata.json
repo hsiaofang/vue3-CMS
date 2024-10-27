@@ -1,0 +1,58 @@
+{
+  "hash": "0923ca32",
+  "configHash": "dad0726d",
+  "lockfileHash": "639a5953",
+  "browserHash": "b054a584",
+  "optimized": {
+    "vue": {
+      "src": "../../node_modules/vue/dist/vue.runtime.esm-bundler.js",
+      "file": "vue.js",
+      "fileHash": "95cb5d41",
+      "needsInterop": false
+    },
+    "element-plus": {
+      "src": "../../node_modules/element-plus/es/index.mjs",
+      "file": "element-plus.js",
+      "fileHash": "55bfed17",
+      "needsInterop": false
+    },
+    "@element-plus/icons-vue": {
+      "src": "../../node_modules/@element-plus/icons-vue/dist/index.js",
+      "file": "@element-plus_icons-vue.js",
+      "fileHash": "f49ef480",
+      "needsInterop": false
+    },
+    "pinia": {
+      "src": "../../node_modules/pinia/dist/pinia.mjs",
+      "file": "pinia.js",
+      "fileHash": "da8fc0e4",
+      "needsInterop": false
+    },
+    "element-plus/es/components/tree-select/src/tree-select-option.mjs": {
+      "src": "../../node_modules/element-plus/es/components/tree-select/src/tree-select-option.mjs",
+      "file": "element-plus_es_components_tree-select_src_tree-select-option__mjs.js",
+      "fileHash": "58e13623",
+      "needsInterop": false
+    },
+    "vue-router": {
+      "src": "../../node_modules/vue-router/dist/vue-router.mjs",
+      "file": "vue-router.js",
+      "fileHash": "52710893",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-XEBYS3ZM": {
+      "file": "chunk-XEBYS3ZM.js"
+    },
+    "chunk-GIADZSXG": {
+      "file": "chunk-GIADZSXG.js"
+    },
+    "chunk-AYVSL3LM": {
+      "file": "chunk-AYVSL3LM.js"
+    },
+    "chunk-FRTAANVS": {
+      "file": "chunk-FRTAANVS.js"
+    }
+  }
+}
