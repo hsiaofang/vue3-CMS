@@ -7,6 +7,7 @@
                 <el-header class="el-header">
                      <common-header />
                 </el-header>
+                <search></search>
                 <common-tab></common-tab>
                 <el-main class="right-mainn">
                     <router-view></router-view> 
@@ -19,6 +20,7 @@
 import CommonAside from '@/components/CommonAside.vue'
 import CommonHeader from '@/components/CommonHeader.vue'
 import CommonTab from '@/components/CommonTab.vue'
+import Search from '@/views/Search.vue'
 import { RouterView } from 'vue-router'
 </script>
 

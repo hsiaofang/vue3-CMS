@@ -41,10 +41,25 @@ export default {
                         },
                         {
                             path: '/loan',
-                            name: 'loan',
+                            // name: 'loan',
                             label: '債務管理',
                             icon: 'money',
-                            url: "Loan"
+                            // url: "Loan",
+                            children: [
+                                {
+                                    path: '/list',
+                                    name: 'list',
+                                    url: "Loan",
+                                    label: '債務列表',
+                                    icon: 'user-cog',
+                                },
+                                {
+                                    path: '/repaymet',
+                                    name: 'repaymet',
+                                    label: '新增還款',
+                                    icon: 'user-cog',
+                                },
+                            ]
                         },
                         {
                             path: '/settings',

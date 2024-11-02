@@ -44,6 +44,10 @@ export const useAllDateStore = defineStore('allDate', () => {
     }
   }
 
+  function getMenuList() {
+    return this.menuList || []
+  }
+
   function updateTags(tag){
     let index = state.value.tags.findIndex((item) => item.name === tag.name)
     state.value.tags.splice(index, 1)
@@ -65,22 +69,24 @@ export const useAllDateStore = defineStore('allDate', () => {
     }
     const menu = state.value.menuList
     const module = import.meta.glob('../views/**/*.vue')
-    const routeArr = []
+    const routerList = []
     menu.forEach(item=>{
+      // console.log('Adding route:', item)
       if(item.children){
         item.children.forEach(val=>{
           let url = `../views/${val.url}.vue`
           val.component = module[url]
-          routeArr.push(...item.children)
+          routerList.push(...item.children)
         })
       }else{
         let url = `../views/${item.url}.vue`
-        item.component = module[url ]
-        routeArr.push(item)
+        item.component = module[url]
+        routerList.push(item)
       }
     })
     state.value.routerList = []
-    routeArr.forEach(item=>{
+    console.log('router:',router.getRoutes())
+    routerList.forEach(item=>{
       if(item.name == "main" || item.name=="login" || item.name=="404"){
         return
       }else{
@@ -98,9 +104,11 @@ export const useAllDateStore = defineStore('allDate', () => {
       localStorage.removeItem('store')
     })
   }
+
   return {
     state,
     selectMenu,
+    getMenuList,
     updateTags,
     updateMenuList,
     addMenu,
