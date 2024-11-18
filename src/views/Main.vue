@@ -28,8 +28,19 @@ import { RouterView } from 'vue-router'
 .common-layout, lay-container{
     height:100%;
 }
-.el-header{
-    background-color: #333;
-}
+// .el-header{
+//     background-color: #333;
+// }
+
+// .common-layout, .lay-container {
+//   background-color: var(--bg-color);
+//   color: var(--text-color);
+// }
+
+// .el-header {
+//   background-color: var(--primary-bg-color);
+// }
+
+
 </style>
  

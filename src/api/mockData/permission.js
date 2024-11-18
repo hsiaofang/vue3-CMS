@@ -41,7 +41,7 @@ export default {
                         },
                         {
                             path: '/loan',
-                            // name: 'loan',
+                            name: 'loan',
                             label: '債務管理',
                             icon: 'money',
                             // url: "Loan",
@@ -54,12 +54,38 @@ export default {
                                     icon: 'user-cog',
                                 },
                                 {
-                                    path: '/repaymet',
-                                    name: 'repaymet',
+                                    path: '/repayment',
+                                    name: 'repayment',
+                                    url: "Repayment",
                                     label: '新增還款',
                                     icon: 'user-cog',
                                 },
                             ]
+                        },
+                        {
+                            path: '/settings',
+                            label: '系統設置',
+                            icon: 'setting',
+                            children: [
+                                {
+                                    path: '/user-settings',
+                                    name: 'userSettings',
+                                    label: '用戶設置',
+                                    icon: 'user-cog',
+                                },
+                                {
+                                    path: '/system-settings',
+                                    name: 'systemSettings',
+                                    label: '系統設置',
+                                    icon: 'cog',
+                                },
+                                {
+                                    path: '/role-management',
+                                    name: 'roleManagement',
+                                    label: '角色管理',
+                                    icon: 'shield',
+                                },
+                            ],
                         },
                         {
                             path: '/settings',

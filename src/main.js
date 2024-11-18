@@ -11,6 +11,7 @@ import { createPinia } from 'pinia'
 import "@/api/mock.js"
 import api from "@/api/api"
 import { useAllDateStore } from "@/stores"
+import { useSettingStore } from '@/stores/setting.js'
 
 router.beforeEach((to,from)=>{
   // if(to.path !== '/login' && !store.state.token){
@@ -31,9 +32,18 @@ app.use(ElementPlus)
 app.use(pinia)
 
 const store = useAllDateStore()
+const settingStore = useSettingStore()
+
 store.addMenu(router, "refresh")
 app.use(router).mount("#app")
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
-  } 
+} 
+
+// const savedTheme = localStorage.getItem('systemTheme')
+// if (savedTheme) {
+//   settingStore.setSystemTheme(savedTheme)
+// } else {
+//   settingStore.setSystemTheme(SystemThemeEnum.AUTO) // 默認為自動
+// }

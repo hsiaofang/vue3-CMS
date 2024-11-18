@@ -99,9 +99,10 @@ const tableLabel = ref({
     action: "還款狀態",
     loan_date: "借款日期",
 })
+
 const xOptions = reactive({
     textStyle: {
-        color: "#333",
+        color: "var(--text-color)",
     },
     legend: {},
     grid: {
@@ -120,7 +121,7 @@ const xOptions = reactive({
         },
         axisLabel: {
             interval: 0,
-            color: "#333",
+            color: "var(--text-color)",
         },
     },
     yAxis: {

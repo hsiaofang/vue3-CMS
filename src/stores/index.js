@@ -2,20 +2,21 @@ import { defineStore } from 'pinia'
 import {ref, watch} from 'vue'
 function initState() {
     return {
-        isCollapse: false,
-        tags: [
-          {
-              path: '/home',
-              name: 'home',
-              label: '首頁',
-              icon: 'home'
-          }
+      isCollapse: false,
+      tags: [
+        {
+            path: '/home',
+            name: 'home',
+            label: '首頁',
+            icon: 'home'
+        }
       ],
       currentMenu: null,
       menuList: [],
       token: "",
       routerList: [],
-      isSearchDialogOpen: false
+      isSearchDialogOpen: false,
+      tableData: []
     }
 }
 export const useAllDateStore = defineStore('allDate', () => {
@@ -34,6 +35,14 @@ export const useAllDateStore = defineStore('allDate', () => {
     },
     { deep: true  }
   )
+
+  function setTableData(data) {
+    state.value.tableData = data.getLoans.data
+  }
+  function getTableData() {
+    return state.value.tableData
+  }
+
   function selectMenu(val){
     if (val.name === 'home') {
       state.value.currentMenu = null
@@ -71,7 +80,6 @@ export const useAllDateStore = defineStore('allDate', () => {
     const module = import.meta.glob('../views/**/*.vue')
     const routerList = []
     menu.forEach(item=>{
-      // console.log('Adding route:', item)
       if(item.children){
         item.children.forEach(val=>{
           let url = `../views/${val.url}.vue`
@@ -107,6 +115,8 @@ export const useAllDateStore = defineStore('allDate', () => {
 
   return {
     state,
+    setTableData,
+    getTableData,
     selectMenu,
     getMenuList,
     updateTags,

@@ -1,11 +1,12 @@
 <template>
+  <div :data-theme="theme">
     <el-aside :width="width">
          <el-menu
-            background-color = "#54546c"
-            text-color = "#fff"
             :collapse = "isCollapsed"
             :collapse-transition = "false"
             :default-active = "activeMenu"
+            background-color="var(--primary-colo)"
+            text-color="var(--text-color)"
         >
         <h3 v-show="!isCollapsed">後台管理系統</h3>
         <h3 v-show="isCollapsed">後台</h3>
@@ -43,12 +44,15 @@
         
       </el-menu>
     </el-aside>
+  </div>
 </template>
 
 <script setup>
-import  {ref,computed} from 'vue'
-import {useAllDateStore} from '@/stores'
+import  {ref,computed,onMounted} from 'vue'
 import {useRouter,useRoute} from 'vue-router'
+import {useAllDateStore} from '@/stores'
+import { useSettingStore, SystemThemeStyles, getLightColor, getDarkColor } from '@/stores/setting'
+
 // const list = ref([
 //     {
 //         path:'/home',
@@ -106,25 +110,46 @@ const handleMenu = (item) => {
     router.push(item.path)
     store.selectMenu(item)
 }
+
+
+const settingStore = useSettingStore()
+const theme = computed(() => settingStore.state.systemThemeType)
+
+
+onMounted(() => {
+  document.documentElement.setAttribute('data-theme', theme.value);
+
+  })
+
 </script>
 
-<style lang="less" scoped >
-.icons{
-    width: 18px;
-    height: 18px;
-    margin-right: 5px; 
+<style lang="less" scoped>
+
+.icons {
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
 }
-.el-menu{
-    border-right: none;
-    h3{
-        line-height: 48px;
-        color: #fff;
-        text-align: center;
-        margin:0;
+
+.el-menu {
+  border-right: none;
+  h3 {
+    line-height: 48px;
+    color: #fff;
+    text-align: center;
+    margin: 0;
+  }
+
+  .el-menu-item {
+    &:hover {
+      // background-color: var(--menu-item-hover-bg);
+      // color: var(--menu-item-hover-color);
     }
+  }
 }
-.el-aside{
+
+.aside {
+    // background-color: var(--aside-bg-color);
     height: 100vh;
-    background-color:#54546c
 }
 </style>
