@@ -1,0 +1,96 @@
+@primary-color-light: #ffffff;
+@primary-color-dark: #1f1f1f;
+@aside-bg-color-light: #f5f5f5;
+@aside-bg-color-dark: #333333;
+@text-color-light: #333;
+@text-color-dark: #fff;
+
+@art-gray-800: #4a4a4a;
+@art-gray-300: #c0c0c0;
+@el-color-primary-light-1: #4a4a4a;
+@main-color: #1f1f1f;
+
+[data-theme="auto"] {
+  --primary-color: @primary-color-light;
+  --aside-bg-color: @aside-bg-color-dark;
+  --text-color: @text-color-dark;
+  --border-color: @art-gray-800;
+  --el-color-primary-light-1: @el-color-primary-light-1;
+  background-color: var(--aside-bg-color);
+  color: var(--text-color);
+  .el-aside {
+    background-color: var(--primary-color) !important;
+  }
+  .el-menu {
+    background-color: var(--primary-color) !important;
+  }
+}
+
+[data-theme="light"] {
+  --primary-color: @primary-color-light;
+  --aside-bg-color: @aside-bg-color-light;
+  --text-color: @text-color-light;
+  --border-color: @art-gray-300;
+  color: var(--text-color);
+}
+
+[data-theme="dark"] {
+  --primary-color: @primary-color-dark;
+  --aside-bg-color: @aside-bg-color-dark;
+  --text-color: @text-color-dark;
+  --border-color: @art-gray-800;
+  --el-color-primary-light-1: @el-color-primary-light-1;
+  background-color: var(--aside-bg-color);
+  color: var(--text-color);
+
+
+  .el-aside {
+    background-color: var(--aside-bg-color) !important;
+    color: var(--text-color) !important; 
+  }
+  .el-menu {
+    background-color: var(--aside-bg-color) !important;
+    color: var(--text-color) !important; 
+  }
+  .el-button {
+    background-color: var(--text-colorr)  
+  }
+  .el-card {
+    background-color: var(--aside-bg-color)
+  }
+  .el-table {
+    background-color: var(--aside-bg-color);
+    color: var(--text-color); 
+  }
+  .el-table th {
+    background-color: var(--border-color);
+  }
+  .el-table td {
+    background-color: var(--aside-bg-color);
+  }
+  .el-table tr:hover td{
+    background-color: #444444 !important;
+    color: var(--text-color) !important;
+  }
+  .el-pagination {
+    background-color: var(--aside-bg-color);
+    color: #fff; 
+  }
+  .el-dialog {
+    background-color: #1f1f1f !important;
+    color: #fff !important;
+  }
+  .el-dialog .el-dialog__header {
+    background-color: #1f1f1f !important;
+    color: #fff !important;
+  }
+  .el-dialog .el-dialog__body {
+    background-color: #1f1f1f !important;
+    color: #fff !important;
+  }
+  .el-dialog .el-dialog__footer {
+    background-color: #333333 !important;
+  }
+
+}
+
