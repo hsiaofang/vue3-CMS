@@ -24,10 +24,7 @@ function initState() {
 
 export const useSettingStore = defineStore('settingStore', () => {
     const state = reactive(initState())
-    
-    function reload() {
-        state.value = initState()
-    }  
+    const refresh = ref(false)
 
     function setThemeColor(color) {
         state.value.themeColor = color
@@ -42,8 +39,7 @@ export const useSettingStore = defineStore('settingStore', () => {
     function setSystemTheme(theme) {
         state.systemTheme = theme
         localStorage.setItem('systemTheme', theme)
-        console.log('Updated systemTheme:', state.systemTheme)
-
+        document.documentElement.setAttribute('data-theme', theme)
     }
 
     function setGlopTheme(theme, themeMode) {
@@ -58,6 +54,10 @@ export const useSettingStore = defineStore('settingStore', () => {
     
     function setElementTheme(theme) {
         setElementThemeColor(theme)
+    }
+
+    function reload(){
+        this.refresh = !this.refresh;
     }
 
     return {
