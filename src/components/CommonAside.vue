@@ -5,7 +5,6 @@
             :collapse = "isCollapsed"
             :collapse-transition = "false"
             :default-active = "activeMenu"
-            background-color="var(--primary-colo)"
             text-color="var(--text-color)"
         >
         <h3 v-show="!isCollapsed">後台管理系統</h3>
@@ -48,108 +47,78 @@
 </template>
 
 <script setup>
-import  {ref,computed,onMounted} from 'vue'
-import {useRouter,useRoute} from 'vue-router'
-import {useAllDateStore} from '@/stores'
-import { useSettingStore, SystemThemeStyles, getLightColor, getDarkColor } from '@/stores/setting'
+  import { computed, onMounted } from 'vue'
+  import { useRouter, useRoute } from 'vue-router'
+  import { useAllDateStore } from '@/stores'
+  import { useSettingStore } from '@/stores/setting'
 
-// const list = ref([
-//     {
-//         path:'/home',
-//         name:'home',
-//         label: "首頁",
-//         icon: 'house',
-//         url: 'Home'
-//     },
-//     {
-//         path:'/mall',
-//         name:'mall',
-//         label: "商品管理",
-//         icon: 'video-play',
-//         url: 'Mall'
-//     },
-//     {
-//         path:'/user',
-//         name:'user',
-//         label: "用戶管理",
-//         icon: 'user',
-//         url: 'user'
-//     },
-//     {
-//         path:'/other',
-//         label: "其他",
-//         icon: 'location',
-//         children: [
-//             {
-//                 path:'/page1',
-//                 name:'page1',
-//                 label: "頁面1",
-//                 icon: 'setting',
-//                 url: 'Page1'
-//             },
-//             {
-//                 path:'/page2',
-//                 name:'page2',
-//                 label: "頁面2",
-//                 icon: 'setting',
-//                 url: 'Page2'
-//             },
-//         ]
-//     },
-// ])
-const list = computed(()=>store.state.menuList)
-const noChildren = computed(()=>list.value.filter(item=>!item.children))
-const hasChildren = computed(()=>list.value.filter(item=> item.children))
-const store = useAllDateStore()
-const isCollapsed = computed(()=>store.state.isCollapse)
-const width = computed(()=>store.state.isCollapse ? '64px' : '180px')
-const router = useRouter()
-const route = useRoute()
-const activeMenu = computed(()=>route.path)
-const handleMenu = (item) => {
-    router.push(item.path)
-    store.selectMenu(item)
-}
-
-
-const settingStore = useSettingStore()
-const theme = computed(() => settingStore.state.systemThemeType)
-
-
-onMounted(() => {
-  document.documentElement.setAttribute('data-theme', theme.value);
-
+  const list = computed(()=>store.state.menuList)
+  const noChildren = computed(()=>list.value.filter(item=>!item.children))
+  const hasChildren = computed(()=>list.value.filter(item=> item.children))
+  const store = useAllDateStore()
+  const isCollapsed = computed(()=>store.state.isCollapse)
+  const width = computed(()=> {
+    if (window.innerWidth< 500) {
+      return '64px';
+    }
+    return store.state.isCollapse ? '64px' : '180px'
   })
-
+  const router = useRouter()
+  const route = useRoute()
+  const activeMenu = computed(()=>route.path)
+  const handleMenu = (item) => {
+      router.push(item.path)
+      store.selectMenu(item)
+  }
+  const settingStore = useSettingStore()
+  const theme = computed(() => settingStore.state.systemThemeType)
+  
+  onMounted(() => {
+    window.addEventListener('resize', updateMenuWidth)
+    updateMenuWidth()
+  })
+  const updateMenuWidth = () => {
+    if (window.innerWidth < 1180) {
+      store.state.isCollapse = true
+    } else {
+      store.state.isCollapse = false
+    }
+  }
 </script>
 
 <style lang="less" scoped>
-
-.icons {
-  width: 18px;
-  height: 18px;
-  margin-right: 5px;
-}
-
-.el-menu {
-  border-right: none;
-  h3 {
-    line-height: 48px;
-    color: #fff;
-    text-align: center;
-    margin: 0;
+  .icons {
+    width: 18px;
+    height: 18px;
+    margin-right: 5px;
   }
 
-  .el-menu-item {
-    &:hover {
-      // background-color: var(--menu-item-hover-bg);
-      // color: var(--menu-item-hover-color);
+  .el-aside {
+    height: 100vh;
+    overflow-y: auto;
+    @media only screen and (max-width: 1180px) {
+      .el-menu {
+        width: 64px !important;
+      }
+    }
+    @media only screen and (max-width: 900px) {
+      .el-menu {
+        width: 64px !important;
+      }
+    }
+
+    @media only screen and (max-width: 600px) {
+      .el-menu {
+        width: 180px !important;
+      }
     }
   }
-}
 
-.aside {
-    // background-color: var(--aside-bg-color);
-    height: 100vh;
-}
+  .el-menu {
+    h3 {
+      line-height: 48px;
+      text-align: center;
+      margin: 0;
+    }
+  }
 </style>

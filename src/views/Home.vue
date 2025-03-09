@@ -1,36 +1,7 @@
 <template>
     <div class="console">
-        <div class="column">
-            <el-card class="card" :body-style="{display: 'flex', padding: 0}">
-                <component :is="'Money'" class="icon" :style="{background:'#5ab1ef'}"></component>
-                <div class="details">
-                    <p class="label">總放款金額</p>
-                    <p class="value">${{ countData.totalLoanAmount }}</p>
-                </div>
-            </el-card>
-            <el-card class="card" :body-style="{display: 'flex', padding: 0}">
-                <component :is="'Finished'" class="icon" :style="{background:'#ffb980'}"></component>
-                <div class="details">
-                    <p class="label">當月應收款項</p>
-                    <p class="value">${{ countData.totalPayment }}</p>
-                </div>
-            </el-card>
-            <el-card class="card" :body-style="{display: 'flex', padding: 0}">
-                <component :is="'WarningFilled'" class="icon" :style="{background:'#d87a80'}"></component>
-                <div class="details">
-                    <p class="label">當月未還款金額</p>
-                    <p class="value">${{ countData.totalUnpaid }}</p>
-                </div>
-            </el-card>
-            <el-card class="card" :body-style="{display: 'flex', padding: 0}">
-                <component :is="'StarFilled'" class="icon" :style="{background:'#d87a80'}"></component>
-                <div class="details">
-                    <p class="label">當月新增貸款</p>
-                    <p class="value">${{ countData.totalUnpaid }}</p>
-                </div>
-            </el-card>
-        </div>
-
+        <notify></notify>
+        <CardList :dataList="dataList" />
         <div class="column2">
             <el-card class="userinfo">
                 <div class="user">
@@ -55,8 +26,10 @@
                 <div ref="userEchart" style="height: 250px"></div>
             </el-card>
             <el-card class="chart-card">
-                <div ref="videoEchart" style="height: 250px"></div>
+                <div ref="videoEchart" style="height: 100%"></div>
             </el-card>
+            <!-- <ChartCard v-if="userChartData.length > 0" :chartType="'user'" :chartData="userChartData" />
+            <ChartCard v-if="videoChartData.length > 0" :chartType="'video'" :chartData="videoChartData" /> -->
         </div>
 
         <div class="column4">
@@ -79,6 +52,9 @@
 import { ref, getCurrentInstance, onMounted, reactive, nextTick } from 'vue'
 import * as echarts from 'echarts'
 import { useSettingStore } from '@/stores/setting.js'
+import CardList from '@/components/dashboard/CardList.vue'
+import ChartCard from '@/components/dashboard/ChartCard.vue'
+// import notify from '@/views/notify.vue'
 
 const { proxy } = getCurrentInstance()
 const settingStore = useSettingStore()
@@ -87,12 +63,39 @@ const getImageUrl = (user) => {
     return new URL(`../asset/images/${user}.png`, import.meta.url).href
 }
 
+const dataList = reactive([
+  {
+    des: '總放款金額',
+    icon: 'Money',
+    num: 0,
+    change: '',
+    color: '#5ab1ef'
+  },
+  {
+    des: '當月應收款項',
+    icon: 'check',
+    num: 0,
+    change: '',
+    color: '#ffb980'
+  },
+  {
+    des: '當月未還款金額',
+    icon: 'WarningFilled',
+    num: 0,
+    change: '',
+    color: '#d87a80'
+  },
+  {
+    des: '當月新增貸款',
+    icon: 'star',
+    num: 0,
+    change: '+30%',
+    color: '#9462e5'
+  }
+])
 const tableData = ref([])
-const countData = ref({
-    totalLoanAmount: 0,
-    totalPayment: 0,
-    totalUnpaid: 0
-})
+const userChartData = ref([])
+const videoChartData = ref([])
 
 const tableLabel = ref({
     debtor_name: "債務人",
@@ -118,12 +121,41 @@ const pieOptions = reactive({
 })
 
 const getCountData = async () => {
-    const response = await proxy.$api.getCountData()
-    countData.value = response
+  const response = await proxy.$api.getCountData()
+  console.log('getCountData', response)
+  dataList[0].num = response.totalLoanAmount
+  dataList[1].num = response.totalPayment
+  dataList[2].num = response.totalUnpaid
+  dataList[3].num = response.totalNewLoan
+
+  dataList[0].change = ''
+  dataList[1].change = ''
+  dataList[2].change = ''
+  // const lastMonthAmount = response.data.totalNewLoanLastMonth || 0
+  dataList[3].change = calculateChange(response.totalNewLoan, response.lastMonthAmount)
 }
+
+const calculateChange = (newValue, oldValue) => {
+  const change = ((newValue - oldValue) / oldValue) * 100
+  return (change > 0 ? '+' : '') + change.toFixed(2) + '%'
+}
+
 
 const getChartData = async () => {
     const { userData, videoData } = await proxy.$api.getChartData()
+    // userChartData.value = userData
+    // videoChartData.value = videoData
+
+    // const { userData, videoData } = await proxy.$api.getChartData()
+
+    // userChartData.value = userData.map(item => ({
+    //     month: item.month,
+    //     totalLoanAmount: item.totalLoanAmount,
+    //     totalMonthlyPaymentAmount: item.totalMonthlyPaymentAmount
+    // }))
+
+    // videoChartData.value = videoData
+
     xOptions.xAxis.data = userData.map(item => item.month)
     xOptions.series = [
         { name: '貸款金額', data: userData.map(item => item.totalLoanAmount), type: 'bar' },
@@ -191,94 +223,26 @@ const getLineChartData = () => {
     const lineChart = echarts.init(proxy.$refs['lineChart'])
     lineChart.setOption(xOptions)
     nextTick(() => {
-        lineChart.resize(); // 確保容器大小計算完成後再調整
+        lineChart.resize();
     });
 }
 
 onMounted(() => {
-    getTableData()
     getCountData()
+    getTableData()
     getChartData()
     getLineChartData()
+
 })
 </script>
 
-
 <style scoped lang="less">
-    .console {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        overflow-y: auto;
-        padding: 20px;
-    }
-
-    .column {
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 20px;
-
-    }
-
-    .card {
-        width: 23%;
-        min-width: 240px;
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        border: none;
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .icon {
-        width: 80px;
-        height: 80px;
-        font-size: 40px;
-        text-align: center;
-        line-height: 80px;
-        color: #fff;
-        border-radius: 50%;
-        margin: 20px auto;
-    }
-
-    .details {
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        text-align: center;
-    }
-
-    .label {
-        font-size: 14px;
-        color: #aaa;
-    }
-
-    .value {
-        font-size: 22px;
-        color: #333;
-        font-weight: 600;
-        margin-top: 10px;
-    }
-
-    @media screen and (max-width: 768px) {
-        .card {
-            width: 100%;
-        }
-    }
-
-    @media screen and (max-width: 480px) {
-        .card {
-            width: 100%;
-        }
-    }
+.console {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    overflow: auto;
 
     .column2 {
         display: flex;
@@ -286,65 +250,61 @@ onMounted(() => {
         gap: 20px;
         align-items: stretch;
         width: 100%;
-    }
 
-    .userinfo {
-        width: 300px;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        border: none;
-    }
+        .userinfo {
+            width: 300px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 
-    .user {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
-    }
+            .user {
+                display: flex;
+                align-items: center;
+                margin-bottom: 20px;
 
-    .user-img {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        object-fit: cover;
-        margin-right: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
+                .user-img {
+                    width: 120px;
+                    height: 120px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    margin-right: 20px;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                }
 
-    .user-info {
-        flex: 1;
-    }
+                .user-info-admin {
+                    font-size: 20px;
+                    font-weight: bold;
+                    color: #333;
+                }
 
-    .user-info-admin {
-        font-size: 20px;
-        font-weight: bold;
-        color: #333;
-    }
+                .user-info-p {
+                    font-size: 16px;
+                    color: #777;
+                }
 
-    .user-info-p {
-        font-size: 16px;
-        color: #777;
-    }
+                .login {
+                    font-size: 14px;
+                    color: #888;
 
-    .login {
-        font-size: 14px;
-        color: #888;
-        p {
-            line-height: 20px;
-        }
-        span {
-            font-weight: bold;
-            color: #333;
+                    p {
+                        line-height: 20px;
+                    }
+
+                    span {
+                        font-weight: bold;
+                        color: #333;
+                    }
+                }
+            }
         }
     }
 
     .linechart {
         flex: 2;
         width: 100%;
-        height: auto;       
+        height: auto;
         border-radius: 12px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        border: none;
     }
 
     .column3 {
@@ -352,21 +312,18 @@ onMounted(() => {
         gap: 20px;
         justify-content: space-between;
         width: 100%;
-    }
 
-    .chart-card {
-        width: 48%;
-        height: 250px;
-        background-color: #fff;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        border: none;
-        overflow: hidden;
-        transition: all 0.3s ease
-    }
+        .chart-card {
+            width: 48%;
+            height: 250px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 
-    .chart-card:hover {
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            &:hover {
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            }
+        }
     }
 
     .column4 {
@@ -374,38 +331,34 @@ onMounted(() => {
         justify-content: center;
         margin-top: 20px;
         min-height: 300px;
-    }
 
-    .user-table {
-        width: 100%;
-        background-color: #fff;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        border: none;
-        max-height: 400px; 
-        overflow-y: auto;
+        .user-table {
+            width: 100%;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-height: 400px;
+            overflow-y: auto;
 
-    }
+            .el-table {
+                border-radius: 12px;
 
-    .el-table {
-        border-radius: 12px;
-        overflow: hidden;
-    }
+                th {
+                    background-color: #f5f7fa;
+                    color: #333;
+                    font-weight: 600;
+                }
 
-    .el-table th {
-        background-color: #f5f7fa;
-        color: #333;
-        font-weight: 600;
-    }
+                td {
+                    color: #666;
+                }
 
-    .el-table td {
-        color: #666;
+                tr:nth-child(even) {
+                    background-color: #fafafa;
+                }
+            }
+        }
     }
+}
 
-    .el-table tr:nth-child(even) {
-        background-color: #fafafa;
-    }
 </style>
-
-
-
